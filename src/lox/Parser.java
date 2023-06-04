@@ -4,6 +4,7 @@ import static lox.TokenType.*;
 
 import java.util.List;
 
+// Recursive Descent parser
 public class Parser {
   private static class ParseError extends RuntimeException {}
   private final List<Token> tokens;
