@@ -1,19 +1,29 @@
 package lox;
 
+import java.util.List;
+
+import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Unary;
+import lox.Expr.Variable;
+import lox.Stmt.Block;
+import lox.Stmt.Expression;
+import lox.Stmt.Print;
+import lox.Stmt.Var;
 
-public class Interpreter implements Expr.Visitor<Object> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
+  private Environment environment = new Environment();
 
-  void interpret(Expr expression) {
+  void interpret(List<Stmt> statements) {
     try {
-      Object value = evaluate(expression);
-      System.out.println(stringify(value));
-    } catch (RuntimeError error) {
-      Lox.runtimeError(error);
+      for(Stmt statement : statements) {
+        execute(statement);
+      }
+    } catch (RuntimeError e) {
+      Lox.runtimeError(e);
     }
   }
 
@@ -86,6 +96,50 @@ public class Interpreter implements Expr.Visitor<Object> {
     return null;
   }
 
+
+  @Override
+  public Void visitExpressionStmt(Expression stmt) {
+    evaluate(stmt.expression);
+    return null;
+  }
+
+  @Override
+  public Void visitPrintStmt(Print stmt) {
+    Object value = evaluate(stmt.expression);
+    System.out.println(stringify(value));
+    return null;
+  }
+
+  @Override
+  public Void visitVarStmt(Var stmt) {
+    Object value = null;
+    if (stmt.initializer != null) {
+      value = evaluate(stmt.initializer);
+    }
+
+    environment.define(stmt.name.lexeme, value);
+    return null;
+  }
+
+  @Override
+  public Object visitVariableExpr(Variable expr) {
+    return environment.get(expr.name);
+  }
+
+  @Override
+  public Object visitAssignExpr(Assign expr) {
+    Object value = evaluate(expr.value);
+    environment.assign(expr.name, value);
+    return value;
+  }
+
+  @Override
+  public Void visitBlockStmt(Block stmt) {
+    executeBlock(stmt.statements, new Environment(environment));
+    return null;
+  }
+
+
   private void checkNumberOperand(Token operator, Object operand) {
     if (operand instanceof Double) return;
     throw new RuntimeError(operator, "Operator must be a number.");
@@ -126,4 +180,21 @@ public class Interpreter implements Expr.Visitor<Object> {
   private Object evaluate(Expr expr) {
     return expr.accept(this);
   }
+
+  private void execute(Stmt stmt) {
+    stmt.accept(this);
+  }
+
+  void executeBlock(List<Stmt> statements, Environment environment) {
+    Environment previous = this.environment;
+    try {
+      this.environment = environment;
+      for(Stmt statement : statements) {
+        execute(statement);
+      }
+    } finally {
+      this.environment = previous;
+    }
+  }
+
 }
