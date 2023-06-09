@@ -8,12 +8,17 @@ import java.util.Stack;
 import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Call;
+import lox.Expr.Get;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
+import lox.Expr.Set;
+import lox.Expr.Super;
+import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 import lox.Stmt.Block;
+import lox.Stmt.Class;
 import lox.Stmt.Expression;
 import lox.Stmt.Function;
 import lox.Stmt.If;
@@ -33,8 +38,18 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
   private enum FunctionType {
     NONE,
-    FUNCTION
-  } 
+    FUNCTION,
+    INITIALIZER,
+    METHOD
+  }
+
+  private enum ClassType {
+    NONE,
+    CLASS,
+    SUBCLASS
+  }
+
+  private ClassType currentClass = ClassType.NONE;
 
   void resolve(List<Stmt> statements) {
     for(Stmt statement : statements) {
@@ -97,6 +112,51 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitClassStmt(Class stmt) {
+    ClassType enclosingClass = currentClass;
+    currentClass = ClassType.CLASS;
+
+    declare(stmt.name);
+    define(stmt.name);
+
+    if (stmt.superclass != null && 
+        stmt.name.lexeme.equals(stmt.superclass.name.lexeme)) {
+      Lox.error(stmt.superclass.name, "A class can't inherit from itself.");
+    }
+
+    if (stmt.superclass != null) {
+      currentClass = ClassType.SUBCLASS;
+      resolve(stmt.superclass);
+    }
+
+    if (stmt.superclass != null) {
+      beginScope();;
+      scopes.peek().put("super", true);
+    }
+
+    beginScope();
+    scopes.peek().put("this", true);
+
+    for(Stmt.Function method : stmt.methods) {
+      FunctionType declaration = FunctionType.METHOD;
+      if (method.name.lexeme.equals("init")) {
+        declaration = FunctionType.INITIALIZER;
+      }
+      resolveFunction(method, declaration);
+    }
+
+    endScope();
+
+    if (stmt.superclass != null) endScope();
+
+    currentClass = enclosingClass;
+    
+    return null;
+  }
+
+
+  
+  @Override
   public Void visitExpressionStmt(Expression stmt) {
     resolve(stmt.expression);
     return null;
@@ -132,6 +192,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     if (stmt.value != null) {
+      if (currentFunction == FunctionType.INITIALIZER) {
+        Lox.error(stmt.keyword, "Can't return a value from an initializer.");
+      }
       resolve(stmt.value);
     }
 
@@ -181,6 +244,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitGetExpr(Get expr) {
+    resolve(expr.object);
+    return null;
+  }
+
+  @Override
   public Void visitGroupingExpr(Grouping expr) {
     resolve(expr.expression);
     return null;
@@ -195,6 +264,38 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   public Void visitLogicalExpr(Logical expr) {
     resolve(expr.left);
     resolve(expr.right);
+    return null;
+  }
+
+  @Override
+  public Void visitSetExpr(Set expr) {
+    resolve(expr.value);
+    resolve(expr.object);
+    return null;
+  }
+
+  @Override
+  public Void visitSuperExpr(Super expr) {
+    if (currentClass == ClassType.NONE) {
+      Lox.error(expr.keyword, 
+        "Can't use 'super' outside of a class");
+    } else if (currentClass != ClassType.SUBCLASS) {
+      Lox.error(expr.keyword, 
+        "Can't use 'super' in a class with no superclass.");
+    }
+
+    resolveLocal(expr, expr.keyword);
+    return null;
+  }
+
+  @Override
+  public Void visitThisExpr(This expr) {
+    if (currentClass == ClassType.NONE) {
+      Lox.error(expr.keyword, "Can't use 'this' outside of a class");
+      return null;
+    }
+
+    resolveLocal(expr, expr.keyword);
     return null;
   }
 
