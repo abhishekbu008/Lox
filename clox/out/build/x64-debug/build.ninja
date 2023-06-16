@@ -91,7 +91,7 @@ build clox\CMakeFiles\clox.dir\chunk.cpp.obj: CXX_COMPILER__clox_unscanned_Debug
   TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
   TARGET_PDB = clox\clox.pdb
 
-build clox\CMakeFiles\clox.dir\memory.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\memory.cpp || cmake_object_order_depends_target_clox
+build clox\CMakeFiles\clox.dir\compiler.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\compiler.cpp || cmake_object_order_depends_target_clox
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
   OBJECT_DIR = clox\CMakeFiles\clox.dir
   OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
@@ -99,6 +99,27 @@ build clox\CMakeFiles\clox.dir\memory.cpp.obj: CXX_COMPILER__clox_unscanned_Debu
   TARGET_PDB = clox\clox.pdb
 
 build clox\CMakeFiles\clox.dir\debug.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\debug.cpp || cmake_object_order_depends_target_clox
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
+  OBJECT_DIR = clox\CMakeFiles\clox.dir
+  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
+  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
+  TARGET_PDB = clox\clox.pdb
+
+build clox\CMakeFiles\clox.dir\memory.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\memory.cpp || cmake_object_order_depends_target_clox
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
+  OBJECT_DIR = clox\CMakeFiles\clox.dir
+  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
+  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
+  TARGET_PDB = clox\clox.pdb
+
+build clox\CMakeFiles\clox.dir\object.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\object.cpp || cmake_object_order_depends_target_clox
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
+  OBJECT_DIR = clox\CMakeFiles\clox.dir
+  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
+  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
+  TARGET_PDB = clox\clox.pdb
+
+build clox\CMakeFiles\clox.dir\scanner.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\scanner.cpp || cmake_object_order_depends_target_clox
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
   OBJECT_DIR = clox\CMakeFiles\clox.dir
   OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
@@ -119,20 +140,6 @@ build clox\CMakeFiles\clox.dir\vm.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$
   TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
   TARGET_PDB = clox\clox.pdb
 
-build clox\CMakeFiles\clox.dir\compiler.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\compiler.cpp || cmake_object_order_depends_target_clox
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
-  OBJECT_DIR = clox\CMakeFiles\clox.dir
-  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
-  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
-  TARGET_PDB = clox\clox.pdb
-
-build clox\CMakeFiles\clox.dir\scanner.cpp.obj: CXX_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\scanner.cpp || cmake_object_order_depends_target_clox
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -std:c++20 -ZI
-  OBJECT_DIR = clox\CMakeFiles\clox.dir
-  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
-  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
-  TARGET_PDB = clox\clox.pdb
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target clox
@@ -141,7 +148,7 @@ build clox\CMakeFiles\clox.dir\scanner.cpp.obj: CXX_COMPILER__clox_unscanned_Deb
 #############################################
 # Link the executable clox\clox.exe
 
-build clox\clox.exe: CXX_EXECUTABLE_LINKER__clox_Debug clox\CMakeFiles\clox.dir\clox.cpp.obj clox\CMakeFiles\clox.dir\chunk.cpp.obj clox\CMakeFiles\clox.dir\memory.cpp.obj clox\CMakeFiles\clox.dir\debug.cpp.obj clox\CMakeFiles\clox.dir\value.cpp.obj clox\CMakeFiles\clox.dir\vm.cpp.obj clox\CMakeFiles\clox.dir\compiler.cpp.obj clox\CMakeFiles\clox.dir\scanner.cpp.obj
+build clox\clox.exe: CXX_EXECUTABLE_LINKER__clox_Debug clox\CMakeFiles\clox.dir\clox.cpp.obj clox\CMakeFiles\clox.dir\chunk.cpp.obj clox\CMakeFiles\clox.dir\compiler.cpp.obj clox\CMakeFiles\clox.dir\debug.cpp.obj clox\CMakeFiles\clox.dir\memory.cpp.obj clox\CMakeFiles\clox.dir\object.cpp.obj clox\CMakeFiles\clox.dir\scanner.cpp.obj clox\CMakeFiles\clox.dir\value.cpp.obj clox\CMakeFiles\clox.dir\vm.cpp.obj
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Ob0 /Od /RTC1 -ZI
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

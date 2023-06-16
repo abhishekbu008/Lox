@@ -26,6 +26,8 @@ static void repl() {
 }
 
 static char* readFile(const char* path) {
+
+#pragma warning (disable : 4996)
 	FILE* file = fopen(path, "rb");
 	if (file == NULL) {
 		fprintf(stderr, "Could not open file \"%s\".\n", path);
@@ -37,7 +39,7 @@ static char* readFile(const char* path) {
 	rewind(file);
 
 	char* buffer = (char*)malloc(fileSize + 1);
-		
+
 	if (buffer == NULL) {
 		fprintf(stderr, "Not enough memory to read \"%s\".\n", path);
 		exit(74);
@@ -78,7 +80,7 @@ int main(int argc, const char* argv[])
 		fprintf(stderr, "Usage: clox [path]\n");
 		exit(64);
 	}
-	
+
 	freeVM();
 	return 0;
 }

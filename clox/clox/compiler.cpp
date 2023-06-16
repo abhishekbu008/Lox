@@ -170,6 +170,12 @@ static void number() {
 	emitConstant(NUMBER_VAL(value));
 }
 
+static void string() {
+	ObjString* objString = copyString(parser.previous.start + 1,
+		parser.previous.length - 2);
+	emitConstant(OBJ_VAL(objString));
+}
+
 static void unary() {
 	TokenType operatorType = parser.previous.type;
 
@@ -202,10 +208,10 @@ ParseRule rules[] = {
 	{ NULL, binary, PREC_EQUALITY },	// [TOKEN_EQUAL_EQUAL]	 
 	{ NULL, binary, PREC_COMPARISON },	// [TOKEN_GREATER]		 
 	{ NULL, binary, PREC_COMPARISON },	// [TOKEN_GREATER_EQUAL] 
-	{ NULL, binary, PREC_COMPARISON },			// [TOKEN_LESS]		 
-	{ NULL, binary, PREC_COMPARISON },			// [TOKEN_LESS_EQUAL]	 
+	{ NULL, binary, PREC_COMPARISON },	// [TOKEN_LESS]		 
+	{ NULL, binary, PREC_COMPARISON },	// [TOKEN_LESS_EQUAL]	 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_IDENTIFIER]	 
-	{ NULL, NULL, PREC_NONE },			// [TOKEN_STRING]		 
+	{ string, NULL, PREC_NONE },			// [TOKEN_STRING]		 
 	{ number, NULL, PREC_NONE },		// [TOKEN_NUMBER]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_AND]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_CLASS]		 
@@ -214,13 +220,13 @@ ParseRule rules[] = {
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_FOR]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_FUN]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_IF]			 
-	{ literal, NULL, PREC_NONE },			// [TOKEN_NIL]			 
+	{ literal, NULL, PREC_NONE },		// [TOKEN_NIL]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_OR]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_PRINT]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_RETURN]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_SUPER]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_THIS]		 
-	{ literal, NULL, PREC_NONE },			// [TOKEN_TRUE]		 
+	{ literal, NULL, PREC_NONE },		// [TOKEN_TRUE]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_VAR]			 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_WHILE]		 
 	{ NULL, NULL, PREC_NONE },			// [TOKEN_ERROR]		 

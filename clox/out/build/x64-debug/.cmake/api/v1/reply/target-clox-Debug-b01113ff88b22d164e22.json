@@ -60,13 +60,14 @@
 			"sourceIndexes" : 
 			[
 				0,
-				4,
-				6,
-				8,
-				10,
+				11,
 				12,
+				13,
 				14,
-				16
+				15,
+				16,
+				17,
+				18
 			]
 		}
 	],
@@ -104,13 +105,14 @@
 			"sourceIndexes" : 
 			[
 				0,
-				4,
-				6,
-				8,
-				10,
+				11,
 				12,
+				13,
 				14,
-				16
+				15,
+				16,
+				17,
+				18
 			]
 		},
 		{
@@ -120,12 +122,13 @@
 				1,
 				2,
 				3,
+				4,
 				5,
+				6,
 				7,
+				8,
 				9,
-				11,
-				13,
-				15
+				10
 			]
 		}
 	],
@@ -139,6 +142,11 @@
 		},
 		{
 			"backtrace" : 1,
+			"path" : "clox/headers/chunk.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
 			"path" : "clox/headers/clox.h",
 			"sourceGroupIndex" : 1
 		},
@@ -149,7 +157,37 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "clox/headers/chunk.h",
+			"path" : "clox/headers/compiler.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/debug.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/memory.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/object.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/scanner.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/value.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "clox/headers/vm.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -160,19 +198,9 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "clox/headers/memory.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "clox/memory.cpp",
+			"path" : "clox/compiler.cpp",
 			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "clox/headers/debug.h",
-			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
@@ -182,8 +210,21 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "clox/headers/value.h",
-			"sourceGroupIndex" : 1
+			"compileGroupIndex" : 0,
+			"path" : "clox/memory.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "clox/object.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "clox/scanner.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
@@ -193,35 +234,8 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "clox/headers/vm.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "clox/vm.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "clox/headers/compiler.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "clox/compiler.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "clox/headers/scanner.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "clox/scanner.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
