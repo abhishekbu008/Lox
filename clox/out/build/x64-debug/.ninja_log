@@ -1,12 +1,21 @@
 # ninja log v5
 1	8	0	clean	8c45b54705a541e8
+35	148	7086175885850011	clox/CMakeFiles/clox.dir/value.cpp.obj	c66e71eb79cb2a43
 21	110	7086175885537507	clox/CMakeFiles/clox.dir/memory.cpp.obj	34b9fbd07fb53f28
 17	131	7086175885693770	clox/CMakeFiles/clox.dir/debug.cpp.obj	a4a3f2519d157559
 9	138	7086175885693770	clox/CMakeFiles/clox.dir/chunk.cpp.obj	db2dbf08a8a22ce5
 26	146	7086175885850011	clox/CMakeFiles/clox.dir/object.cpp.obj	39a91f0846517325
 30	147	7086175885850011	clox/CMakeFiles/clox.dir/scanner.cpp.obj	dfd2a3a9ea1949f8
-35	148	7086175885850011	clox/CMakeFiles/clox.dir/value.cpp.obj	c66e71eb79cb2a43
 13	150	7086175885850011	clox/CMakeFiles/clox.dir/compiler.cpp.obj	f80bd52481d2933d
 39	163	7086175886006248	clox/CMakeFiles/clox.dir/vm.cpp.obj	9797abf996b2eae1
 5	629	7086175890693745	clox/CMakeFiles/clox.dir/clox.cpp.obj	ecad8a5c2f463c21
 630	852	7086175892724999	clox/clox.exe	b4561f043fb9077d
+17	507	7086962409870080	clox/CMakeFiles/clox.dir/memory.cpp.obj	34b9fbd07fb53f28
+33	517	7086962410026346	clox/CMakeFiles/clox.dir/table.cpp.obj	f51eb3482c08ec04
+10	527	7086962410026346	clox/CMakeFiles/clox.dir/chunk.cpp.obj	db2dbf08a8a22ce5
+24	540	7086962410182582	clox/CMakeFiles/clox.dir/value.cpp.obj	c66e71eb79cb2a43
+21	540	7086962410182582	clox/CMakeFiles/clox.dir/object.cpp.obj	39a91f0846517325
+14	541	7086962410182582	clox/CMakeFiles/clox.dir/compiler.cpp.obj	f80bd52481d2933d
+29	542	7086962410182582	clox/CMakeFiles/clox.dir/vm.cpp.obj	9797abf996b2eae1
+6	1019	7086962415026313	clox/CMakeFiles/clox.dir/clox.cpp.obj	ecad8a5c2f463c21
+1019	1282	7086962417213807	clox/clox.exe	113eeaee1eee776b
