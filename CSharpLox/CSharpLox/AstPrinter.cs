@@ -1,24 +1,10 @@
-﻿using CSharpLox;
-using System.Text;
+﻿using System.Text;
 
-namespace AstPrinter
+namespace CSharpLox
 {
-    public class Printer : Expr.IVisitor<string>
+    public class AstPrinter : Expr.IVisitor<string>
     {
-        public static void Run()
-        {
-            Expr expression = new Expr.Binary(
-                new Expr.Unary(
-                    new Token(TokenType.MINUS, "-", null, 1),
-                    new Expr.Literal(123)),
-                new Token(TokenType.STAR, "*", null, 1),
-                new Expr.Grouping(
-                    new Expr.Literal(45.67)));
-
-            Console.WriteLine(new Printer().Print(expression));
-        }
-
-        string Print(Expr expr)
+        public string Print(Expr expr)
         {
             return expr.Accept(this);
         }

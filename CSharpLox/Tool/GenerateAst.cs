@@ -10,7 +10,7 @@ DefineAst(outputDir, "Expr", new List<string>
     {
         "Binary     : Expr left, Token operatorToken, Expr right",
         "Grouping   : Expr expression",
-        "Literal    : object value",
+        "Literal    : object? value",
         "Unary      : Token operatorToken, Expr right"
     });
 

@@ -47,7 +47,7 @@ public abstract class Expr {
 
     public class Literal : Expr
     {
-        public Literal (object value)
+        public Literal (object? value)
         {
             this.value = value;
         }
@@ -57,7 +57,7 @@ public abstract class Expr {
             return visitor.VisitLiteralExpr(this);
         }
 
-        public object value ;
+        public object? value ;
     }
 
     public class Unary : Expr

@@ -1,3 +1,0 @@
-﻿using AstPrinter;
-
-Printer.Run();

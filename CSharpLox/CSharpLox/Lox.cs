@@ -49,12 +49,13 @@ public class Lox
     {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.ScanTokens();
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.Parse();
 
-        // For now just print the tokens.
-        foreach (var token in tokens)
-        {
-            Console.WriteLine(token);
-        }
+        // Stop if there was a syntax error.
+        if (hadError) return;
+
+        Console.WriteLine(new AstPrinter().Print(expression));
     }
 
     public static void Error(int line, string message)
@@ -66,5 +67,17 @@ public class Lox
     {
         Console.Error.WriteLine($"[line {line} ] Error {where}: ");
         hadError = true;
+    }
+
+    public static void Error(Token token, string message)
+    {
+        if (token.Type == TokenType.EOF)
+        {
+            Report(token.Line, "at end ", message);
+        } 
+        else
+        {
+            Report(token.Line, $" at '{token.Lexeme}' ",message);
+        }
     }
 }
