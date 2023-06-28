@@ -38,7 +38,7 @@ static void DefineAst(string outputDir, string baseName, List<string> types)
 
     // The base accept() method.
     writer.WriteLine();
-    writer.WriteLine("    public abstract R Accept<R>(IVisitor<R> visitor);");
+    writer.WriteLine("\tpublic abstract R Accept<R>(IVisitor<R> visitor);");
 
     writer.WriteLine("}");
     writer.Close();
@@ -46,51 +46,51 @@ static void DefineAst(string outputDir, string baseName, List<string> types)
 
 static void DefineVisitor(StreamWriter writer, string baseName, List<string> types)
 {
-    writer.WriteLine("    public interface IVisitor<R>");
-    writer.WriteLine("    {");
+    writer.WriteLine("\tpublic interface IVisitor<R>");
+    writer.WriteLine("\t{");
 
     foreach (var type in types)
     {
         var typeName = type.Split(":")[0].Trim();
-        writer.WriteLine($"        R Visit{typeName}{baseName}({typeName} {baseName.ToLower()});");
+        writer.WriteLine($"\t\tR Visit{typeName}{baseName}({typeName} {baseName.ToLower()});");
     }
 
-    writer.WriteLine("    }");
+    writer.WriteLine("\t}");
 }
 
 static void DefineType(StreamWriter writer, string baseName, string className, string fieldList)
 {
     writer.WriteLine();
-    writer.WriteLine($"    public class {className} : {baseName}");
-    writer.WriteLine("    {");
+    writer.WriteLine($"\tpublic class {className} : {baseName}");
+    writer.WriteLine("\t{");
 
     // Constructor
-    writer.WriteLine($"        public {className} ({fieldList})");
-    writer.WriteLine("        {");
+    writer.WriteLine($"\t\tpublic {className} ({fieldList})");
+    writer.WriteLine("\t\t{");
 
     // Store parameters in fields.
     string[] fields = fieldList.Split(", ");
     foreach (var field in fields)
     {
         var name = field.Split(" ")[1];
-        writer.WriteLine($"            this.{name} = {name};");
+        writer.WriteLine($"\t\t\tthis.{name} = {name};");
     }
 
-    writer.WriteLine("        }");
+    writer.WriteLine("\t\t}");
 
     // Visitor pattern
     writer.WriteLine();
-    writer.WriteLine("        public override R Accept<R>(IVisitor<R> visitor)");
-    writer.WriteLine("        {");
-    writer.WriteLine($"            return visitor.Visit{className}{baseName}(this);");
-    writer.WriteLine("        }");
+    writer.WriteLine("\t\tpublic override R Accept<R>(IVisitor<R> visitor)");
+    writer.WriteLine("\t\t{");
+    writer.WriteLine($"\t\t\treturn visitor.Visit{className}{baseName}(this);");
+    writer.WriteLine("\t\t}");
 
     // Fields 
     writer.WriteLine();
     foreach (var field in fields)
     {
-        writer.WriteLine($"        public {field} ;");
+        writer.WriteLine($"\t\tpublic {field} ;");
     }
 
-    writer.WriteLine("    }");
+    writer.WriteLine("\t}");
 }

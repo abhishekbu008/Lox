@@ -4,7 +4,9 @@ namespace CSharpLox;
 
 public class Lox
 {
+    private static readonly Interpreter interpreter = new();
     static bool hadError = false;
+    static bool hadRuntimeError = false;
 
     public static void Main(string[] args)
     {
@@ -30,6 +32,7 @@ public class Lox
 
         // Indicate an error in the exit code.
         if (hadError) Environment.Exit(65);
+        if (hadRuntimeError) Environment.Exit(70);
     }
 
     private static void RunPrompt()
@@ -55,7 +58,7 @@ public class Lox
         // Stop if there was a syntax error.
         if (hadError) return;
 
-        Console.WriteLine(new AstPrinter().Print(expression));
+        interpreter.Interpret(expression);
     }
 
     public static void Error(int line, string message)
@@ -79,5 +82,11 @@ public class Lox
         {
             Report(token.Line, $" at '{token.Lexeme}' ",message);
         }
+    }
+
+    public static void RuntimeError(RuntimeError error)
+    {
+        Console.Error.WriteLine(error.Message + $"\n[line {error.Token.Line}]");
+        hadRuntimeError = true;
     }
 }
