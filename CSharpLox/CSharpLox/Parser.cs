@@ -19,22 +19,116 @@ namespace CSharpLox
             this.tokens = tokens;
         }
 
-        public Expr Parse()
+        // program -> declaration* EOF;
+        public List<Stmt> Parse()
+        {
+            var statements = new List<Stmt>();
+            while (!IsAtEnd())
+            {
+                statements.Add(Declaration());
+            }
+
+            return statements;
+        }
+
+        // Expression -> assignment;
+        private Expr Expression()
+        {
+            return Assignment();
+        }
+
+        // declaration -> varDecl | statement;
+        private Stmt Declaration()
         {
             try
             {
-                return Expression();
+                if (Match(TokenType.VAR)) return VarDeclaration();
+                return Statement();
             } 
             catch (ParseError error)
             {
+                Synchronize();
                 return null;
             }
         }
 
-        // Expression -> Equality;
-        private Expr Expression()
+        // statement -> exprStmt
+        //              | printStmt
+        //              | block ;
+        private Stmt Statement()
         {
-            return Equality();
+            if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
+
+            return ExpressionStatement();
+        }
+
+        // printStmt -> "print" expression ";" ;
+        private Stmt PrintStatement()
+        {
+            Expr value = Expression();
+            Consume(TokenType.SEMICOLON, "Expect ';' after value");
+            return new Stmt.Print(value);
+        }
+
+        // ()? means exactly zero or one time but not more than that
+        // varDecl     -> "var" IDENTIFIER ( "=" expression)? ";" 
+        private Stmt VarDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+            Expr? initializer = null;
+            if (Match(TokenType.EQUAL))
+            {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration");
+            return new Stmt.Var(name, initializer);
+        }
+
+        // exprStmt  -> expression ";" ;
+        private Stmt ExpressionStatement()
+        {
+            Expr expr = Expression();
+            Consume(TokenType.SEMICOLON, "Expect ';' after expression");
+            return new Stmt.Expression(expr);
+        }
+
+        // block     -> "{" declaration "}" ;
+        private List<Stmt> Block()
+        {
+            List<Stmt> statements = new();
+
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd()) 
+            {
+                statements.Add(Declaration());
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after block");
+            return statements;
+        }
+
+        // assignment -> IDENTIFIER "=" assignment
+        //               | equality
+        private Expr Assignment()
+        {
+            Expr expr = Equality();
+            if (Match(TokenType.EQUAL))
+            {
+                Token equals = Previous();
+                Expr value = Assignment();
+
+                if (expr is Expr.Variable variable)
+                {
+                    Token name = variable.name;
+                    return new Expr.Assign(name, value);
+                }
+
+                Error(equals, "Invalid assignment target");
+            }
+
+            return expr;
         }
 
         // Equality   -> Comparison ( ( "!=" | "==" ) Comparison )* ;
@@ -112,7 +206,7 @@ namespace CSharpLox
         }
 
         // Primary    -> NUMBER | STRING | "true" | "false" | "nil"
-        //              | "(" Expression ")" ;
+        //              | "(" Expression ")" | IDENTIFIER ;
         private Expr Primary()
         {
             if (Match(TokenType.FALSE)) return new Expr.Literal(false);
@@ -122,6 +216,11 @@ namespace CSharpLox
             if (Match(TokenType.NUMBER, TokenType.STRING))
             {
                 return new Expr.Literal(Previous().Literal);
+            }
+
+            if (Match(TokenType.IDENTIFIER))
+            {
+                return new Expr.Variable(Previous());
             }
 
             if (Match(TokenType.LEFT_PAREN))

@@ -5,13 +5,24 @@ if (args.Length != 1)
     Console.Error.WriteLine("Usage: generate_ast <output directory>");
     Environment.Exit(64);
 }
+
 var outputDir  = args[0];
 DefineAst(outputDir, "Expr", new List<string>
     {
+        "Assign     : Token name, Expr value",
         "Binary     : Expr left, Token operatorToken, Expr right",
         "Grouping   : Expr expression",
         "Literal    : object? value",
-        "Unary      : Token operatorToken, Expr right"
+        "Unary      : Token operatorToken, Expr right",
+        "Variable   : Token name"
+    });
+
+DefineAst(outputDir, "Stmt", new List<string>
+    {
+        "Block      : List<Stmt> statements",
+        "Expression : Expr expression",
+        "Print      : Expr expression",
+        "Var        : Token name, Expr? initializer"   
     });
 
 static void DefineAst(string outputDir, string baseName, List<string> types)
