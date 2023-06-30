@@ -53,14 +53,90 @@ namespace CSharpLox
         }
 
         // statement -> exprStmt
+        //              | forStmt
+        //              | ifStmt
         //              | printStmt
+        //              | whileStmt
         //              | block ;
         private Stmt Statement()
         {
+            if (Match(TokenType.FOR)) return ForStatement();
+            if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
+        }
+
+        // forStmt   -> "for" "(" ( varDecl | exprStmt | ";" )
+        //              expression? ";"
+        //              expression? ")" statement ;
+        private Stmt ForStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+            Stmt? initializer;
+            if (Match(TokenType.SEMICOLON))
+            {
+                initializer = null;
+            } 
+            else if (Match(TokenType.VAR))
+            {
+                initializer = VarDeclaration();
+            } 
+            else
+            {
+                initializer = ExpressionStatement();
+            }
+
+            Expr? condition = null;
+            if (!Check(TokenType.SEMICOLON))
+            {
+                condition = Expression();
+            }
+            Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+            Expr? increment = null;
+            if (!Check(TokenType.RIGHT_PAREN))
+            {
+                increment = Expression();
+            }
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses");
+            Stmt body = Statement();
+
+            if (increment != null)
+            {
+                body = new Stmt.Block(new List<Stmt> { body, new Stmt.Expression(increment) } );
+            }
+
+            if (condition == null) condition = new Expr.Literal(true);
+            body = new Stmt.While(condition, body);
+
+            if (initializer != null)
+            {
+                body = new Stmt.Block(new List<Stmt> { initializer, body } );
+            }
+
+            return body;
+        }
+
+        // ifStmt    -> "if" "(" expression ")" statement
+        //              ( "else" statment )?;
+        private Stmt IfStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+            Expr condition = Expression();
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition");
+
+            Stmt thenBranch = Statement();
+            Stmt? elseBranch = null;
+            if (Match(TokenType.ELSE))
+            {
+                elseBranch = Statement();
+            }
+
+            return new Stmt.If(condition, thenBranch, elseBranch); 
         }
 
         // printStmt -> "print" expression ";" ;
@@ -87,6 +163,17 @@ namespace CSharpLox
             return new Stmt.Var(name, initializer);
         }
 
+        // whileStmt -> "while" "(" expression ")" statement;
+        private Stmt WhileStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+            Expr condition = Expression();
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
+            Stmt body = Statement();
+
+            return new Stmt.While(condition, body);
+        }
+
         // exprStmt  -> expression ";" ;
         private Stmt ExpressionStatement()
         {
@@ -110,10 +197,10 @@ namespace CSharpLox
         }
 
         // assignment -> IDENTIFIER "=" assignment
-        //               | equality
+        //               | logic_or;
         private Expr Assignment()
         {
-            Expr expr = Equality();
+            Expr expr = Or();
             if (Match(TokenType.EQUAL))
             {
                 Token equals = Previous();
@@ -126,6 +213,36 @@ namespace CSharpLox
                 }
 
                 Error(equals, "Invalid assignment target");
+            }
+
+            return expr;
+        }
+
+        // logic_or   -> logic_and ( "or" logic_and )* ;
+        private Expr Or()
+        {
+            Expr expr = And();
+
+            while (Match(TokenType.OR)) 
+            {
+                Token operatorToken = Previous();
+                Expr right = And();
+                expr = new Expr.Logical(expr, operatorToken, right);  
+            }
+
+            return expr;
+        }
+
+        // logic_and  -> equality ( "and" equality )* ;
+        private Expr And()
+        {
+            Expr expr = Equality();
+
+            while(Match(TokenType.AND))
+            {
+                Token operatorToken = Previous();
+                Expr right = Equality();
+                expr = new Expr.Logical(expr, operatorToken, right);
             }
 
             return expr;

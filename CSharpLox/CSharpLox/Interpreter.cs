@@ -1,4 +1,6 @@
-﻿namespace CSharpLox
+﻿using System.Diagnostics;
+
+namespace CSharpLox
 {
     public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<object?>
     {
@@ -76,6 +78,22 @@
             return expr.value;
         }
 
+        public object? VisitLogicalExpr(Expr.Logical expr)
+        {
+            var left = Evaluate(expr.left);
+
+            if (expr.operatorToken.Type == TokenType.OR) 
+            {
+                if (IsTruthy(left)) return left;
+            }
+            else
+            {
+                if (!IsTruthy(left)) return left;
+            }
+
+            return Evaluate(expr.right);
+        }
+
         public object? VisitUnaryExpr(Expr.Unary expr)
         {
             var right = Evaluate(expr.right);
@@ -106,7 +124,7 @@
             throw new RuntimeError(operatorToken, "Operands must be numbers");
         }
 
-        private bool IsTruthy(object obj)
+        private bool IsTruthy(object? obj)
         {
             if (obj == null) return false;
             if (obj is bool boolVal) return boolVal;
@@ -189,6 +207,19 @@
             return null;
         }
 
+        public object? VisitIfStmt(Stmt.If stmt)
+        {
+            var evauateCond = Evaluate(stmt.condition);
+            if (evauateCond != null && IsTruthy(evauateCond)) {
+                Execute(stmt.thenBranch);
+            } else if (stmt.elseBranch != null)
+            {
+                Execute(stmt.elseBranch);
+            }
+
+            return null;
+        }
+
         public object? VisitPrintStmt(Stmt.Print stmt)
         {
             var value = Evaluate(stmt.expression);
@@ -208,6 +239,16 @@
             return null;
         }
 
+        public object? VisitWhileStmt(Stmt.While stmt)
+        {
+            while (IsTruthy(Evaluate(stmt.condition)))
+            {
+                Execute(stmt.body);
+            }
+
+            return null;
+        }
+
         public object? VisitAssignExpr(Expr.Assign expr)
         {
             var value = Evaluate(expr.value);
@@ -219,6 +260,5 @@
         {
             return environment.Get(expr.name);
         }
-
     }
 }

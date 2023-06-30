@@ -9,6 +9,7 @@ public abstract class Expr {
 		R VisitBinaryExpr(Binary expr);
 		R VisitGroupingExpr(Grouping expr);
 		R VisitLiteralExpr(Literal expr);
+		R VisitLogicalExpr(Logical expr);
 		R VisitUnaryExpr(Unary expr);
 		R VisitVariableExpr(Variable expr);
 	}
@@ -77,6 +78,25 @@ public abstract class Expr {
 		}
 
 		public object? value ;
+	}
+
+	public class Logical : Expr
+	{
+		public Logical (Expr left, Token operatorToken, Expr right)
+		{
+			this.left = left;
+			this.operatorToken = operatorToken;
+			this.right = right;
+		}
+
+		public override R Accept<R>(IVisitor<R> visitor)
+		{
+			return visitor.VisitLogicalExpr(this);
+		}
+
+		public Expr left ;
+		public Token operatorToken ;
+		public Expr right ;
 	}
 
 	public class Unary : Expr
