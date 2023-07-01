@@ -187,7 +187,7 @@
 
         public object? VisitVariableExpr(Expr.Variable expr)
         {
-            if (scopes.Count != 0 && scopes.Peek()[expr.name.Lexeme] == false)
+            if (scopes.Count != 0 && scopes.Peek().TryGetValue(expr.name.Lexeme, out bool val) && val == false)
             {
                 Lox.Error(expr.name, "Can't read local variable in its own initializer.");
             }

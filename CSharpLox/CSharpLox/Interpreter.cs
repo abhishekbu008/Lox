@@ -7,7 +7,7 @@ namespace CSharpLox
     {
         public LoxEnvironment globals = new();
         private LoxEnvironment environment;
-        private Dictionary<Expr, int?> locals = new();
+        private Dictionary<Expr, int> locals = new();
 
         private class Clock : ILoxCallable
         {
@@ -324,9 +324,9 @@ namespace CSharpLox
         public object? VisitAssignExpr(Expr.Assign expr)
         {
             var value = Evaluate(expr.value);
-            int? distance = locals[expr];
+            var isDistanceExists = locals.TryGetValue(expr, out int distance);
             
-            if (distance != null)
+            if (isDistanceExists)
             {
                 environment.AssignAt(distance, expr.name, value);
             }
@@ -345,15 +345,13 @@ namespace CSharpLox
 
         private object? LookUpVariable(Token name, Expr expr)
         {
-            var distance = locals[expr];
-            if (distance != null)
+            var isDistanceExists = locals.TryGetValue(expr, out int distance);
+            if (isDistanceExists)
             {
                 return environment.GetAt(distance, name.Lexeme);
             } 
-            else
-            {
-                return globals.Get(name);
-            }
+            
+            return globals.Get(name);
         }
     }
 }
