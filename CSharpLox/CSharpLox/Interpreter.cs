@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Numerics;
-
-namespace CSharpLox
+﻿namespace CSharpLox
 {
     public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<object?>
     {
