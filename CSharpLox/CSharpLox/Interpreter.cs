@@ -30,7 +30,6 @@ namespace CSharpLox
         {
 
             globals.Define("clock", new Clock());
-            environment.Define("clock", new Clock());
         }
 
         public void Interpret(List<Stmt> statements)
