@@ -5,6 +5,34 @@ namespace CSharpLox
     public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<object?>
     {
         private LoxEnvironment environment = new();
+        public readonly LoxEnvironment globals = new();
+
+        private class Clock : ILoxCallable
+        {
+            public int Arity()
+            {
+                return 0;
+            }
+
+            public object? Call(Interpreter interpreter, List<object?> arguments)
+            {
+                var unixEpoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+                return (DateTimeOffset.UtcNow - unixEpoch).TotalSeconds;
+            }
+
+            public override string ToString()
+            {
+                return "<native fn>";
+            }
+        }
+
+        public Interpreter()
+        {
+
+            globals.Define("clock", new Clock());
+            environment.Define("clock", new Clock());
+        }
+
         public void Interpret(List<Stmt> statements)
         {
             try
@@ -66,6 +94,30 @@ namespace CSharpLox
 
             // Unreachable code
             return null;
+        }
+
+        public object? VisitCallExpr(Expr.Call expr)
+        {
+            var callee = Evaluate(expr.callee);
+
+            var arguments = new List<object?>();
+            foreach (var argument in expr.arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+            if (callee is not ILoxCallable)
+            {
+                throw new RuntimeError(expr.paren, 
+                    "Can only call functions and classes.");
+            }
+
+            var function = (ILoxCallable)callee;
+
+            if (arguments.Count != function.Arity())
+            {
+                throw new RuntimeError(expr.paren, $"Expected {function.Arity()} arguments, but got {arguments.Count}.");
+            }
+            return function.Call(this, arguments);
         }
 
         public object? VisitGroupingExpr(Expr.Grouping expr)
@@ -177,7 +229,7 @@ namespace CSharpLox
             stmt.Accept(this);
         }
 
-        void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
+        public void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
         {
             var previous = this.environment;
             try
@@ -207,6 +259,13 @@ namespace CSharpLox
             return null;
         }
 
+        public object? VisitFunctionStmt(Stmt.Function stmt)
+        {
+            LoxFunction function = new(stmt, environment);
+            environment.Define(stmt.name.Lexeme, function);
+            return null;
+        }
+
         public object? VisitIfStmt(Stmt.If stmt)
         {
             var evauateCond = Evaluate(stmt.condition);
@@ -225,6 +284,13 @@ namespace CSharpLox
             var value = Evaluate(stmt.expression);
             Console.WriteLine(Stringify(value));
             return null;
+        }
+
+        public object? VisitReturnStmt(Stmt.Return stmt)
+        {
+            object? value = null;
+            if (stmt.value != null) value = Evaluate(stmt.value);
+            throw new Return(value);
         }
 
         public object? VisitVarStmt(Stmt.Var stmt)
