@@ -58,6 +58,12 @@ public class Lox
         // Stop if there was a syntax error.
         if (hadError) return;
 
+        Resolver resolver = new(interpreter);
+        resolver.Resolve(statements);
+
+        // Stop if there was a resoltion error
+        if (hadError) return;
+
         interpreter.Interpret(statements);
     }
 

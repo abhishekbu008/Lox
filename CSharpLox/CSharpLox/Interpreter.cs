@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace CSharpLox
 {
     public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<object?>
     {
-        private LoxEnvironment environment = new();
-        public readonly LoxEnvironment globals = new();
+        public LoxEnvironment globals = new();
+        private LoxEnvironment environment;
+        private Dictionary<Expr, int?> locals = new();
 
         private class Clock : ILoxCallable
         {
@@ -28,7 +30,7 @@ namespace CSharpLox
 
         public Interpreter()
         {
-
+            environment = globals;
             globals.Define("clock", new Clock());
         }
 
@@ -228,6 +230,11 @@ namespace CSharpLox
             stmt.Accept(this);
         }
 
+        public void Resolve(Expr expr, int depth)
+        {
+            locals[expr] = depth;
+        }
+
         public void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
         {
             var previous = this.environment;
@@ -317,13 +324,36 @@ namespace CSharpLox
         public object? VisitAssignExpr(Expr.Assign expr)
         {
             var value = Evaluate(expr.value);
-            environment.Assign(expr.name, value);
+            int? distance = locals[expr];
+            
+            if (distance != null)
+            {
+                environment.AssignAt(distance, expr.name, value);
+            }
+            else
+            {
+                globals.Assign(expr.name, value);   
+            }
+
             return value;
         }
 
         public object? VisitVariableExpr(Expr.Variable expr)
         {
-            return environment.Get(expr.name);
+            return LookUpVariable(expr.name, expr);
+        }
+
+        private object? LookUpVariable(Token name, Expr expr)
+        {
+            var distance = locals[expr];
+            if (distance != null)
+            {
+                return environment.GetAt(distance, name.Lexeme);
+            } 
+            else
+            {
+                return globals.Get(name);
+            }
         }
     }
 }
