@@ -12,9 +12,12 @@ DefineAst(outputDir, "Expr", new List<string>
         "Assign     : Token name, Expr value",
         "Binary     : Expr left, Token operatorToken, Expr right",
         "Call       : Expr callee, Token paren, List<Expr> arguments",
+        "Get        : Expr obj, Token name",
         "Grouping   : Expr expression",
         "Literal    : object? value",
         "Logical    : Expr left, Token operatorToken, Expr right",
+        "Set        : Expr obj, Token name, Expr value",
+        "This       : Token keyword",
         "Unary      : Token operatorToken, Expr right",
         "Variable   : Token name"
     });
@@ -22,6 +25,7 @@ DefineAst(outputDir, "Expr", new List<string>
 DefineAst(outputDir, "Stmt", new List<string>
     {
         "Block      : List<Stmt> statements",
+        "Class      : Token name, List<Stmt.Function> methods",
         "Expression : Expr expression",
         "Function   : Token name, List<Token> parameters, List<Stmt> body",
         "If         : Expr condition, Stmt thenBranch, Stmt? elseBranch",

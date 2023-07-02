@@ -37,11 +37,15 @@ namespace CSharpLox
             return Assignment();
         }
 
-        // declaration -> funDecl | varDecl | statement;
+        // declaration -> classDecl
+        //              | funDecl
+        //              | varDecl
+        //              | statement;
         private Stmt? Declaration()
         {
             try
             {
+                if (Match(TokenType.CLASS)) return ClassDeclaration();
                 if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
                 return Statement();
@@ -51,6 +55,22 @@ namespace CSharpLox
                 Synchronize();
                 return null;
             }
+        }
+
+        // classDecl   -> "class" IDENTIFIER "{" function* "}" ;
+        private Stmt? ClassDeclaration() 
+        {
+            var name = Consume(TokenType.IDENTIFIER, "Expect class name");
+            Consume(TokenType.LEFT_BRACE, "Expect '{' before class body");
+
+            List<Stmt.Function> methods = new();
+            while(!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
+            {
+                methods.Add(Function("method"));
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body");
+            return new Stmt.Class(name, methods);
         }
 
         // statement -> exprStmt
@@ -240,7 +260,7 @@ namespace CSharpLox
             return statements;
         }
 
-        // assignment -> IDENTIFIER "=" assignment
+        // assignment -> ( call "." )? IDENTIFIER "=" assignment
         //               | logic_or;
         private Expr Assignment()
         {
@@ -254,6 +274,10 @@ namespace CSharpLox
                 {
                     Token name = variable.name;
                     return new Expr.Assign(name, value);
+                } 
+                else if (expr is Expr.Get get)
+                {
+                    return new Expr.Set(get.obj, get.name, value);
                 }
 
                 Error(equals, "Invalid assignment target");
@@ -366,7 +390,7 @@ namespace CSharpLox
             return Call();
         }
 
-        // Call       -> primary ( "(" arguments? ")" )* ;
+        // Call       -> primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
         private Expr Call()
         {
             Expr expr = Primary();
@@ -376,7 +400,12 @@ namespace CSharpLox
                 if (Match(TokenType.LEFT_PAREN))
                 {
                     expr = FinishCall(expr);
-                } 
+                }
+                else if (Match(TokenType.DOT))
+                {
+                    var name = Consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                    expr = new Expr.Get(expr, name);
+                }
                 else
                 {
                     break;
@@ -407,7 +436,7 @@ namespace CSharpLox
         }
 
         // Primary    -> NUMBER | STRING | "true" | "false" | "nil"
-        //              | "(" Expression ")" | IDENTIFIER ;
+        //              | "(" Expression ")" | IDENTIFIER | this ;
         private Expr Primary()
         {
             if (Match(TokenType.FALSE)) return new Expr.Literal(false);
@@ -418,6 +447,8 @@ namespace CSharpLox
             {
                 return new Expr.Literal(Previous().Literal);
             }
+
+            if (Match(TokenType.THIS)) return new Expr.This(Previous());
 
             if (Match(TokenType.IDENTIFIER))
             {

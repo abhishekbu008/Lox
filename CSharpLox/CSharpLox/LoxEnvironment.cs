@@ -62,7 +62,7 @@
 
         public object? GetAt(int distance, string name)
         {
-            return Ancestor(distance)?.values[name];
+            return Ancestor(distance).values.TryGetValue(name, out var value) ? value : null;
         }
 
         public void AssignAt(int distance, Token name, object? value)

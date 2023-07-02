@@ -118,6 +118,17 @@
             return function.Call(this, arguments);
         }
 
+        public object? VisitGetExpr(Expr.Get expr)
+        {
+            var obj = Evaluate(expr.obj);
+            if (obj is LoxInstance instance)
+            {
+                return instance.Get(expr.name);
+            }
+
+            throw new RuntimeError(expr.name, "Only instances have properties.");
+        }
+
         public object? VisitGroupingExpr(Expr.Grouping expr)
         {
             return Evaluate(expr.expression);
@@ -142,6 +153,25 @@
             }
 
             return Evaluate(expr.right);
+        }
+
+        public object? VisitSetExpr(Expr.Set expr)
+        {
+            var obj = Evaluate(expr.obj);
+
+            if (obj is not LoxInstance)
+            {
+                throw new RuntimeError(expr.name, "Only instances have fields.");
+            }
+
+            var value = Evaluate(expr.value);
+            ((LoxInstance)obj).Set(expr.name, value);
+            return value;
+        }
+
+        public object? VisitThisExpr(Expr.This expr)
+        {
+            return LookUpVariable(expr.keyword, expr);
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr)
@@ -256,6 +286,24 @@
             return null;
         }
 
+
+        public object? VisitClassStmt(Stmt.Class stmt)
+        {
+            environment.Define(stmt.name.Lexeme, null);
+
+            var methods = new Dictionary<string, LoxFunction>();
+            foreach (var method in stmt.methods)
+            {
+                var function = new LoxFunction(method, environment, 
+                    method.name.Lexeme.Equals("init"));
+                methods[method.name.Lexeme] = function;
+            }
+
+            LoxClass klass = new LoxClass(stmt.name.Lexeme, methods);
+            environment.Assign(stmt.name, klass);
+            return null;
+        }
+
         public object? VisitExpressionStmt(Stmt.Expression stmt)
         {
             Evaluate(stmt.expression);
@@ -264,7 +312,7 @@
 
         public object? VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new(stmt, environment);
+            LoxFunction function = new(stmt, environment, false);
             environment.Define(stmt.name.Lexeme, function);
             return null;
         }
@@ -347,8 +395,11 @@
             {
                 return environment.GetAt(distance, name.Lexeme);
             } 
+            else
+            {
+                return globals.Get(name);
+            }
             
-            return globals.Get(name);
         }
     }
 }

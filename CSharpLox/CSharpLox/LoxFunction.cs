@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CSharpLox.Stmt;
+
 
 namespace CSharpLox
 {
@@ -11,11 +13,13 @@ namespace CSharpLox
         private Stmt.Function declaration;
         private LoxEnvironment closure;
 
-        public LoxFunction(Stmt.Function declaration, LoxEnvironment closure)
+        private readonly bool isInitializer;
+
+        public LoxFunction(Stmt.Function declaration, LoxEnvironment closure, bool isInitializer)
         {
             this.declaration = declaration;
             this.closure = closure;
-
+            this.isInitializer = isInitializer;
         }
 
         public int Arity()
@@ -37,10 +41,19 @@ namespace CSharpLox
             }
             catch (Return returnValue)
             {
+                if (isInitializer) return closure.GetAt(0, "this");
                 return returnValue.Value;
             }
 
+            if (isInitializer) return closure.GetAt(0, "this");
             return null;
+        }
+
+        public LoxFunction Bind(LoxInstance instance)
+        {
+            var environment = new LoxEnvironment(closure);
+            environment.Define("this", instance);
+            return new LoxFunction(declaration, environment, isInitializer);
         }
 
         public override string ToString()

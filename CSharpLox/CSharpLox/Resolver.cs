@@ -14,8 +14,18 @@
         private enum FunctionType
         {
             NONE,
-            FUNCTION
+            FUNCTION,
+            INITIALIZER,
+            METHOD
         }
+
+        private enum ClassType
+        {
+            NONE,
+            CLASS
+        }
+
+        private ClassType currentClass = ClassType.NONE;
 
         public void Resolve(List<Stmt> statements)
         {
@@ -75,6 +85,32 @@
             return null;
         }
 
+        public object? VisitClassStmt(Stmt.Class stmt)
+        {
+            ClassType enclosingClass = currentClass;
+            currentClass = ClassType.CLASS;
+
+            Declare(stmt.name);
+            Define(stmt.name);
+
+            BeginScope();
+            scopes.Peek()["this"] = true;
+
+            foreach(var method in stmt.methods)
+            {
+                var declaration = FunctionType.METHOD;
+                if (method.name.Lexeme.Equals("init"))
+                {
+                    declaration = FunctionType.INITIALIZER;
+                }
+                ResolveFunction(method, declaration);
+            }
+
+            EndScope();
+            currentClass = enclosingClass;
+            return null;
+        }
+
         public object? VisitExpressionStmt(Stmt.Expression stmt)
         {
             Resolve(stmt.expression); return null;
@@ -112,6 +148,11 @@
 
             if (stmt.value != null)
             {
+                if (currentFunction == FunctionType.INITIALIZER)
+                {
+                    Lox.Error(stmt.keyword, "Can't return a value from an initializer");
+                }
+
                 Resolve(stmt.value);
             }
             return null;
@@ -161,6 +202,12 @@
             return null;
         }
 
+        public object? VisitGetExpr(Expr.Get expr)
+        {
+            Resolve(expr.obj);
+            return null;
+        }
+
         public object? VisitGroupingExpr(Expr.Grouping expr)
         {
             Resolve(expr.expression);
@@ -176,6 +223,25 @@
         {
             Resolve(expr.left);
             Resolve(expr.right);
+            return null;
+        }
+
+        public object? VisitSetExpr(Expr.Set expr)
+        {
+            Resolve(expr.value);
+            Resolve(expr.obj);
+            return null;
+        }
+
+        public object? VisitThisExpr(Expr.This expr)
+        {
+            if (currentClass == ClassType.NONE)
+            {
+                Lox.Error(expr.keyword, "Can't use 'this' outside of a class");
+                return null;
+            }
+
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 

@@ -8,9 +8,12 @@ public abstract class Expr {
 		R VisitAssignExpr(Assign expr);
 		R VisitBinaryExpr(Binary expr);
 		R VisitCallExpr(Call expr);
+		R VisitGetExpr(Get expr);
 		R VisitGroupingExpr(Grouping expr);
 		R VisitLiteralExpr(Literal expr);
 		R VisitLogicalExpr(Logical expr);
+		R VisitSetExpr(Set expr);
+		R VisitThisExpr(This expr);
 		R VisitUnaryExpr(Unary expr);
 		R VisitVariableExpr(Variable expr);
 	}
@@ -70,6 +73,23 @@ public abstract class Expr {
 		public List<Expr> arguments ;
 	}
 
+	public class Get : Expr
+	{
+		public Get (Expr obj, Token name)
+		{
+			this.obj = obj;
+			this.name = name;
+		}
+
+		public override R Accept<R>(IVisitor<R> visitor)
+		{
+			return visitor.VisitGetExpr(this);
+		}
+
+		public Expr obj ;
+		public Token name ;
+	}
+
 	public class Grouping : Expr
 	{
 		public Grouping (Expr expression)
@@ -117,6 +137,40 @@ public abstract class Expr {
 		public Expr left ;
 		public Token operatorToken ;
 		public Expr right ;
+	}
+
+	public class Set : Expr
+	{
+		public Set (Expr obj, Token name, Expr value)
+		{
+			this.obj = obj;
+			this.name = name;
+			this.value = value;
+		}
+
+		public override R Accept<R>(IVisitor<R> visitor)
+		{
+			return visitor.VisitSetExpr(this);
+		}
+
+		public Expr obj ;
+		public Token name ;
+		public Expr value ;
+	}
+
+	public class This : Expr
+	{
+		public This (Token keyword)
+		{
+			this.keyword = keyword;
+		}
+
+		public override R Accept<R>(IVisitor<R> visitor)
+		{
+			return visitor.VisitThisExpr(this);
+		}
+
+		public Token keyword ;
 	}
 
 	public class Unary : Expr
