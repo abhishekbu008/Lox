@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Tool": {
-      "commandName": "Project",
-      "commandLineArgs": "D:\\projects\\Lox\\CSharpLox\\CSharpLox\\"
-    }
-  }
-}
