@@ -57,10 +57,18 @@ namespace CSharpLox
             }
         }
 
-        // classDecl   -> "class" IDENTIFIER "{" function* "}" ;
+        // classDecl   -> "class" IDENTIFIER ( "<" IDENTIFIER )? "{" function* "}" ;
         private Stmt? ClassDeclaration() 
         {
             var name = Consume(TokenType.IDENTIFIER, "Expect class name");
+
+            Expr.Variable? superclass = null;
+            if (Match(TokenType.LESS))
+            {
+                Consume(TokenType.IDENTIFIER, "Expect superclass name");
+                superclass = new Expr.Variable(Previous());
+            }
+
             Consume(TokenType.LEFT_BRACE, "Expect '{' before class body");
 
             List<Stmt.Function> methods = new();
@@ -70,7 +78,7 @@ namespace CSharpLox
             }
 
             Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body");
-            return new Stmt.Class(name, methods);
+            return new Stmt.Class(name, superclass, methods);
         }
 
         // statement -> exprStmt
@@ -436,7 +444,7 @@ namespace CSharpLox
         }
 
         // Primary    -> NUMBER | STRING | "true" | "false" | "nil"
-        //              | "(" Expression ")" | IDENTIFIER | this ;
+        //              | "(" Expression ")" | IDENTIFIER | "this" | "super" "." IDENTIFIER ;
         private Expr Primary()
         {
             if (Match(TokenType.FALSE)) return new Expr.Literal(false);
@@ -446,6 +454,14 @@ namespace CSharpLox
             if (Match(TokenType.NUMBER, TokenType.STRING))
             {
                 return new Expr.Literal(Previous().Literal);
+            }
+
+            if (Match(TokenType.SUPER))
+            {
+                var keyword = Previous();
+                Consume(TokenType.DOT, "Expect '.' after 'super'");
+                var method = Consume(TokenType.IDENTIFIER, "Expect superclass method name");
+                return new Expr.Super(keyword, method);
             }
 
             if (Match(TokenType.THIS)) return new Expr.This(Previous());

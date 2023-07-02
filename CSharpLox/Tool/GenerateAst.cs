@@ -17,6 +17,7 @@ DefineAst(outputDir, "Expr", new List<string>
         "Literal    : object? value",
         "Logical    : Expr left, Token operatorToken, Expr right",
         "Set        : Expr obj, Token name, Expr value",
+        "Super      : Token keyword, Token method",
         "This       : Token keyword",
         "Unary      : Token operatorToken, Expr right",
         "Variable   : Token name"
@@ -25,7 +26,7 @@ DefineAst(outputDir, "Expr", new List<string>
 DefineAst(outputDir, "Stmt", new List<string>
     {
         "Block      : List<Stmt> statements",
-        "Class      : Token name, List<Stmt.Function> methods",
+        "Class      : Token name, Expr.Variable? superclass, List<Stmt.Function> methods",
         "Expression : Expr expression",
         "Function   : Token name, List<Token> parameters, List<Stmt> body",
         "If         : Expr condition, Stmt thenBranch, Stmt? elseBranch",

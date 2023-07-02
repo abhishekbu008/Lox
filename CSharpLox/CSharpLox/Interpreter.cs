@@ -169,6 +169,21 @@
             return value;
         }
 
+        public object? VisitSuperExpr(Expr.Super expr)
+        {
+            int distance = locals[expr];
+            var superclass = (LoxClass)environment.GetAt(distance, "super")!;
+            var obj = (LoxInstance)environment.GetAt(distance - 1, "this")!;
+            var method = superclass.FindMethod(expr.method.Lexeme);
+
+            if (method == null)
+            {
+                throw new RuntimeError(expr.method, $"Undefined property '{expr.method.Lexeme}'.");
+            }
+
+            return method.Bind(obj);
+        }
+
         public object? VisitThisExpr(Expr.This expr)
         {
             return LookUpVariable(expr.keyword, expr);
@@ -289,7 +304,23 @@
 
         public object? VisitClassStmt(Stmt.Class stmt)
         {
+            object? superclass = null;
+            if (stmt.superclass != null)
+            {
+                superclass = Evaluate(stmt.superclass);
+                if (superclass is not LoxClass)
+                {
+                    throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
+                }
+            }
+
             environment.Define(stmt.name.Lexeme, null);
+
+            if (stmt.superclass != null) 
+            {
+                environment = new LoxEnvironment(environment);
+                environment.Define("super", superclass);
+            }
 
             var methods = new Dictionary<string, LoxFunction>();
             foreach (var method in stmt.methods)
@@ -299,7 +330,13 @@
                 methods[method.name.Lexeme] = function;
             }
 
-            LoxClass klass = new LoxClass(stmt.name.Lexeme, methods);
+            LoxClass klass = new LoxClass(stmt.name.Lexeme, (LoxClass)superclass, methods);
+
+            if (superclass != null)
+            {
+                environment = environment.enclosing;
+            }
+
             environment.Assign(stmt.name, klass);
             return null;
         }
@@ -390,8 +427,7 @@
 
         private object? LookUpVariable(Token name, Expr expr)
         {
-            var isDistanceExists = locals.TryGetValue(expr, out int distance);
-            if (isDistanceExists)
+            if (locals.TryGetValue(expr, out int distance))
             {
                 return environment.GetAt(distance, name.Lexeme);
             } 
