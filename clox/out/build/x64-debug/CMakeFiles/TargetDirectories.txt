@@ -1,0 +1,5 @@
+D:/projects/Lox/clox/out/build/x64-debug/CMakeFiles/edit_cache.dir
+D:/projects/Lox/clox/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
+D:/projects/Lox/clox/out/build/x64-debug/clox/CMakeFiles/clox.dir
+D:/projects/Lox/clox/out/build/x64-debug/clox/CMakeFiles/edit_cache.dir
+D:/projects/Lox/clox/out/build/x64-debug/clox/CMakeFiles/rebuild_cache.dir
