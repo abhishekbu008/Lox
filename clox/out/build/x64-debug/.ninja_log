@@ -1,11 +1,20 @@
 # ninja log v5
-2	429	7101136103158297	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
-5	82	7101127831279722	clox/CMakeFiles/clox.dir/memory.c.obj	4cf764bff9910420
-8	82	7101127831279722	clox/CMakeFiles/clox.dir/chunk.c.obj	4d99b0a2f8527c38
-59	165	7101137013906484	clox/clox.exe	d869ddd862d57a69
-9	59	7101137013125237	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
 2	451	7101158712903581	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
-9	451	7101158712903581	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
-13	451	7101158712903581	clox/CMakeFiles/clox.dir/value.c.obj	dcc020e6f4adcec1
+5	82	7101127831279722	clox/CMakeFiles/clox.dir/memory.c.obj	4cf764bff9910420
 6	451	7101158712903581	clox/CMakeFiles/clox.dir/chunk.c.obj	4d99b0a2f8527c38
 451	623	7101158714153583	clox/clox.exe	da97857a469e16f1
+13	451	7101158712903581	clox/CMakeFiles/clox.dir/value.c.obj	dcc020e6f4adcec1
+9	451	7101158712903581	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
+3	604	7102657872727187	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
+10	605	7102657872727187	clox/CMakeFiles/clox.dir/chunk.c.obj	4d99b0a2f8527c38
+21	605	7102657872727187	clox/CMakeFiles/clox.dir/vm.c.obj	74205e6250dec72
+7	605	7102657872727187	clox/CMakeFiles/clox.dir/memory.c.obj	4cf764bff9910420
+17	605	7102657872727187	clox/CMakeFiles/clox.dir/value.c.obj	dcc020e6f4adcec1
+14	605	7102657872727187	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
+1	51	7102658464187634	clox/CMakeFiles/clox.dir/vm.c.obj	74205e6250dec72
+51	264	7102658465760378	clox/clox.exe	af5f91578ab0505d
+6	447	7102668364910398	clox/CMakeFiles/clox.dir/chunk.c.obj	4d99b0a2f8527c38
+2	448	7102668364910398	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
+9	448	7102668364920386	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
+13	449	7102668364920386	clox/CMakeFiles/clox.dir/vm.c.obj	74205e6250dec72
+449	647	7102668366365620	clox/clox.exe	af5f91578ab0505d
