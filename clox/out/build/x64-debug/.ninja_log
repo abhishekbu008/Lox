@@ -25,3 +25,13 @@
 34	368	7104369069258957	clox/CMakeFiles/clox.dir/compiler.c.obj	b875ebb64419395f
 10	370	7104369069415185	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
 370	1089	7104369075981072	clox/clox.exe	3800030075769af
+31	358	7105189946981313	clox/CMakeFiles/clox.dir/chunk.c.obj	4d99b0a2f8527c38
+38	363	7105189947031325	clox/CMakeFiles/clox.dir/value.c.obj	dcc020e6f4adcec1
+35	363	7105189947031325	clox/CMakeFiles/clox.dir/debug.c.obj	32a6750ec94d6817
+46	370	7105189947111313	clox/CMakeFiles/clox.dir/compiler.c.obj	b875ebb64419395f
+27	372	7105189947121323	clox/CMakeFiles/clox.dir/main.c.obj	e0215ea95e6994a0
+9	63	7105190873513752	clox/CMakeFiles/clox.dir/vm.c.obj	74205e6250dec72
+9	60	7105191318436724	clox/CMakeFiles/clox.dir/vm.c.obj	74205e6250dec72
+61	206	7105191319420964	clox/clox.exe	3800030075769af
+11	68	7105193020239730	clox/CMakeFiles/clox.dir/compiler.c.obj	b875ebb64419395f
+68	217	7105193021349913	clox/clox.exe	3800030075769af
