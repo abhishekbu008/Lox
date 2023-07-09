@@ -133,6 +133,13 @@ build clox\CMakeFiles\clox.dir\scanner.c.obj: C_COMPILER__clox_unscanned_Debug D
   TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
   TARGET_PDB = clox\clox.pdb
 
+build clox\CMakeFiles\clox.dir\object.c.obj: C_COMPILER__clox_unscanned_Debug D$:\projects\Lox\clox\clox\object.c || cmake_object_order_depends_target_clox
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Ob0 /Od /RTC1 -ZI
+  OBJECT_DIR = clox\CMakeFiles\clox.dir
+  OBJECT_FILE_DIR = clox\CMakeFiles\clox.dir
+  TARGET_COMPILE_PDB = clox\CMakeFiles\clox.dir\
+  TARGET_PDB = clox\clox.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target clox
@@ -141,7 +148,7 @@ build clox\CMakeFiles\clox.dir\scanner.c.obj: C_COMPILER__clox_unscanned_Debug D
 #############################################
 # Link the executable clox\clox.exe
 
-build clox\clox.exe: C_EXECUTABLE_LINKER__clox_Debug clox\CMakeFiles\clox.dir\main.c.obj clox\CMakeFiles\clox.dir\memory.c.obj clox\CMakeFiles\clox.dir\chunk.c.obj clox\CMakeFiles\clox.dir\debug.c.obj clox\CMakeFiles\clox.dir\value.c.obj clox\CMakeFiles\clox.dir\vm.c.obj clox\CMakeFiles\clox.dir\compiler.c.obj clox\CMakeFiles\clox.dir\scanner.c.obj
+build clox\clox.exe: C_EXECUTABLE_LINKER__clox_Debug clox\CMakeFiles\clox.dir\main.c.obj clox\CMakeFiles\clox.dir\memory.c.obj clox\CMakeFiles\clox.dir\chunk.c.obj clox\CMakeFiles\clox.dir\debug.c.obj clox\CMakeFiles\clox.dir\value.c.obj clox\CMakeFiles\clox.dir\vm.c.obj clox\CMakeFiles\clox.dir\compiler.c.obj clox\CMakeFiles\clox.dir\scanner.c.obj clox\CMakeFiles\clox.dir\object.c.obj
   FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Ob0 /Od /RTC1 -ZI
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
